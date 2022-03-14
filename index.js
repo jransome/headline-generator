@@ -14,6 +14,7 @@ function shuffle(arr) {
 }
 
 generateButton.addEventListener('click', () => {
+  output.textContent = ''
   const words = input.value.split(',')
 
   for (let i = 0; i < 10; i++) {
