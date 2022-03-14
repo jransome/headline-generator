@@ -1,0 +1,9 @@
+body {
+  text-align: center;
+  background: pink;
+}
+
+#output {
+  font-size: xx-large;
+  list-style: none;
+}
