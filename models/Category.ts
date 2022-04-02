@@ -2,16 +2,16 @@ import mongoose from 'mongoose'
 
 export interface ICategory {
   name: string;
-  words: string[];
+  phrases: string[];
 }
 
 /**
  * 1) adding { strict: 'throw' } as a 2nd arg will force errors to be thrown when encountering additional properties
- * 2) it seems that mongoose will cast input to the expected data type. eg. words: "hi" --> words: ["hi"]
+ * 2) it seems that mongoose will cast input to the expected data type. eg. phrases: "hi" --> phrases: ["hi"]
  */
 const categorySchema = new mongoose.Schema<ICategory>({
   name: { type: String, required: true },
-  words: { type: [String], required: true }
+  phrases: { type: [String], required: true },
 })
 
 const Category: mongoose.Model<ICategory> = mongoose.models.Category || mongoose.model<ICategory>('Category', categorySchema)

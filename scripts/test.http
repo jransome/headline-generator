@@ -2,7 +2,7 @@ PUT http://localhost:3000/api/categories
 
 {
   "name": "booo",
-  "words": "33333sgfdfggsd"
+  "phrases": "33333sgfdfggsd"
 }
 ###
 
