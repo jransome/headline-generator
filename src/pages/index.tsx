@@ -1,11 +1,10 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-// import Image from 'next/image'
 import { Category } from '../models'
 import CategoryForm from '../components/CategoryForm'
 import styles from '../styles/Home.module.css'
-import { useState } from 'react'
-import { ICategory } from '../models/Category'
+import { useReducer } from 'react'
+import { PhrasesByCategory, reducePhrasesByCategory } from '../reducers/phrase-categories'
 
 export async function getServerSideProps() {
   const categoryDocuments = await Category.findAll()
@@ -17,42 +16,42 @@ export async function getServerSideProps() {
   }
 }
 
-const title = 'AutoChantel v 1.3 beta'
+const PAGE_TITLE = 'AutoChantel v 1.3 beta'
 
-type PhrasesByCategory = { [k: string]: string[] }
 type Props = {
   phrasesByCategory: PhrasesByCategory
 }
 
 const Home: NextPage<Props> = ({ phrasesByCategory }: Props) => {
-  const [categories, setCategories] = useState<PhrasesByCategory>(phrasesByCategory)
-  const updateCategory = (name: string, phrases: string[]) => setCategories((old) => {
-    return {
-      ...old,
-      [name]: phrases,
-    }
-  })
+  // const [categories, setCategories] = useState<PhrasesByCategory>(phrasesByCategory)
+  // const updateCategory = (name: string, phrases: string[]) => setCategories((old) => {
+  //   return {
+  //     ...old,
+  //     [name]: phrases,
+  //   }
+  // })
+  const [phraseCategories, dispatch] = useReducer(reducePhrasesByCategory, phrasesByCategory)
 
   return (
     <div className={styles.container}>
       <Head>
-        <title>{title}</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>{PAGE_TITLE}</title>
+        <link rel="icon" href="/images/favicon.ico" />
       </Head>
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          {title}
+          {PAGE_TITLE}
         </h1>
 
         <p className={styles.description}>
           Automating Chantel's job since 2022
         </p>
 
-        <CategoryForm 
-          name={Object.keys(categories)[0]} 
-          phrases={categories[Object.keys(categories)[0]]} 
-          updateCategory={updateCategory}
+        <CategoryForm
+          name={Object.keys(phraseCategories)[1]}
+          phrases={phraseCategories['Puns']}
+          updateCategory={dispatch}
         />
 
       </main>
