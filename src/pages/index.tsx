@@ -1,11 +1,10 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
+import { useReducer } from 'react'
+import { Divider, Group, Text, Title } from '@mantine/core'
 import { Category } from '../models'
-import CategoryForm from '../components/CategoryForm'
-import { useReducer, useState } from 'react'
 import { PhrasesByCategory, reducePhrasesByCategory } from '../reducers/phrase-categories'
-import { Box, Divider, Group, Select } from '@mantine/core'
-import styles from '../styles/Home.module.css'
+import PhraseEditor from '../components/PhraseEditor'
+import CombinationGenerator from '../components/CombinationGenerator'
 
 export async function getServerSideProps() {
   const categoryDocuments = await Category.findAll()
@@ -17,52 +16,42 @@ export async function getServerSideProps() {
   }
 }
 
-const PAGE_TITLE = 'AutoChantel v 1.3 beta'
-
 type Props = {
   phrasesByCategory: PhrasesByCategory
 }
 
 const Home: NextPage<Props> = ({ phrasesByCategory }: Props) => {
-  const categoryNames = Object.keys(phrasesByCategory)
-  const [selectedCategory, setSelectedCategory] = useState(categoryNames[0])
   const [phraseCategories, dispatch] = useReducer(reducePhrasesByCategory, phrasesByCategory)
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>{PAGE_TITLE}</title>
-        <link rel="icon" href="/images/favicon.ico" />
-      </Head>
+    <>
+      <main>
+        <Title order={1}>AutoChantel v 1.3 beta</Title>
+        <Text size="lg">Automating Chantel{"'"}s job since 2022</Text>
+        <Divider sx={{ margin: '10px 0px' }} />
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          {PAGE_TITLE}
-        </h1>
-
-        <p className={styles.description}>
-          Automating Chantel{"'"}s job since 2022
-        </p>
-        <Box>
-          {/* <Box sx={{ backgroundColor: 'pink' }}></Box>
-          <Divider orientation="vertical" size={'md'}/> */}
-          <Select
-            value={selectedCategory}
-            onChange={(value) => setSelectedCategory(value ?? categoryNames[0])}
-            data={categoryNames}
+        <Group sx={{ justifyContent: 'space-between' }}>
+          <CombinationGenerator 
+            phrasesByCategory={phraseCategories} 
           />
-          <CategoryForm
-            name={selectedCategory}
-            phrases={phraseCategories[selectedCategory]}
+          <PhraseEditor
+            phrasesByCategory={phraseCategories}
             updateCategory={dispatch}
           />
-        </Box>
+        </Group>
       </main>
 
-      <footer className={styles.footer}>
+      <footer style={{
+        padding: '2rem 0',
+        borderTop: '1px solid #eaeaea',
+        width: '100%',
+        position: 'fixed',
+        bottom: 0,
+        textAlign: 'center',
+      }}>
         Copyright Ransome Corporation 2022
       </footer>
-    </div>
+    </>
   )
 }
 
