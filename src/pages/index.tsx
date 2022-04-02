@@ -2,9 +2,10 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import { Category } from '../models'
 import CategoryForm from '../components/CategoryForm'
-import styles from '../styles/Home.module.css'
-import { useReducer } from 'react'
+import { useReducer, useState } from 'react'
 import { PhrasesByCategory, reducePhrasesByCategory } from '../reducers/phrase-categories'
+import { Box, Divider, Group, Select } from '@mantine/core'
+import styles from '../styles/Home.module.css'
 
 export async function getServerSideProps() {
   const categoryDocuments = await Category.findAll()
@@ -23,13 +24,8 @@ type Props = {
 }
 
 const Home: NextPage<Props> = ({ phrasesByCategory }: Props) => {
-  // const [categories, setCategories] = useState<PhrasesByCategory>(phrasesByCategory)
-  // const updateCategory = (name: string, phrases: string[]) => setCategories((old) => {
-  //   return {
-  //     ...old,
-  //     [name]: phrases,
-  //   }
-  // })
+  const categoryNames = Object.keys(phrasesByCategory)
+  const [selectedCategory, setSelectedCategory] = useState(categoryNames[0])
   const [phraseCategories, dispatch] = useReducer(reducePhrasesByCategory, phrasesByCategory)
 
   return (
@@ -45,15 +41,22 @@ const Home: NextPage<Props> = ({ phrasesByCategory }: Props) => {
         </h1>
 
         <p className={styles.description}>
-          Automating Chantel's job since 2022
+          Automating Chantel{"'"}s job since 2022
         </p>
-
-        <CategoryForm
-          name={Object.keys(phraseCategories)[1]}
-          phrases={phraseCategories['Puns']}
-          updateCategory={dispatch}
-        />
-
+        <Box>
+          {/* <Box sx={{ backgroundColor: 'pink' }}></Box>
+          <Divider orientation="vertical" size={'md'}/> */}
+          <Select
+            value={selectedCategory}
+            onChange={(value) => setSelectedCategory(value ?? categoryNames[0])}
+            data={categoryNames}
+          />
+          <CategoryForm
+            name={selectedCategory}
+            phrases={phraseCategories[selectedCategory]}
+            updateCategory={dispatch}
+          />
+        </Box>
       </main>
 
       <footer className={styles.footer}>

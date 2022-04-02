@@ -10,7 +10,8 @@ export function reducePhrasesByCategory(state: PhrasesByCategory, action: Phrase
 
   switch (action.type) {
     case 'ADD_BLANK_PHRASE':
-      newState[action.categoryName].push('')
+      if (!newState[action.categoryName].includes('')) 
+        newState[action.categoryName].push('')
       return newState
     case 'EDIT_PHRASE':
       newState[action.categoryName][action.phraseIndex] = action.phrase

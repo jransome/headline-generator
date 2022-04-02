@@ -11,8 +11,8 @@ type Props = Category.ICategory & {
 const CategoryForm = ({ name, phrases, updateCategory }: Props) => {
 
   return (
-    <Box sx={{ maxWidth: 500 }} mx="auto">
-      <Grid>
+    <Box sx={{ maxWidth: 800, maxHeight: 800 }} mx="auto">
+      <Grid sx={{ flexDirection: 'column'}}>
         {phrases.map((phrase, i) =>
           <Group key={i} sx={{ margin: '5px 10px', gap: 2 }}>
             <TextInput
