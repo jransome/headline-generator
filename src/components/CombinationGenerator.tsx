@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, MultiSelect, List } from '@mantine/core'
+import { Container, MultiSelect, List } from '@mantine/core'
 import { PhrasesByCategory } from '../reducers/phrase-categories'
 import { generateCombinations } from '../lib/combinations'
 
@@ -12,7 +12,7 @@ const CombinationGenerator = ({ phrasesByCategory }: Props) => {
   const [categorySelection, setCategorySelection] = useState<string[]>([])
 
   return (
-    <Box>
+    <Container>
       <MultiSelect
         data={categoryNames}
         label="Generate combinations"
@@ -26,7 +26,7 @@ const CombinationGenerator = ({ phrasesByCategory }: Props) => {
         {generateCombinations(categorySelection.map(category => phrasesByCategory[category]))
           .map((c, i) => <List.Item key={i}>{c}</List.Item>)}
       </List>
-    </Box>
+    </Container>
   )
 }
 

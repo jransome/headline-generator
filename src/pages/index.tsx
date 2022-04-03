@@ -1,8 +1,7 @@
 import type { NextPage } from 'next'
-import { useReducer } from 'react'
 import { Divider, Group, Text, Title } from '@mantine/core'
 import { Category } from '../models'
-import { PhrasesByCategory, reducePhrasesByCategory } from '../reducers/phrase-categories'
+import { PhrasesByCategory, usePhraseCategories } from '../reducers/phrase-categories'
 import PhraseEditor from '../components/PhraseEditor'
 import CombinationGenerator from '../components/CombinationGenerator'
 
@@ -21,7 +20,7 @@ type Props = {
 }
 
 const Home: NextPage<Props> = ({ phrasesByCategory }: Props) => {
-  const [phraseCategories, dispatch] = useReducer(reducePhrasesByCategory, phrasesByCategory)
+  const [phraseCategories, dispatchPhraseCategories] = usePhraseCategories(phrasesByCategory)
 
   return (
     <>
@@ -29,14 +28,13 @@ const Home: NextPage<Props> = ({ phrasesByCategory }: Props) => {
         <Title order={1}>AutoChantel v 1.3 beta</Title>
         <Text size="lg">Automating Chantel{"'"}s job since 2022</Text>
         <Divider sx={{ margin: '10px 0px' }} />
-
-        <Group sx={{ justifyContent: 'space-between' }}>
-          <CombinationGenerator 
-            phrasesByCategory={phraseCategories} 
+        <Group>
+          <CombinationGenerator
+            phrasesByCategory={phraseCategories}
           />
           <PhraseEditor
             phrasesByCategory={phraseCategories}
-            updateCategory={dispatch}
+            dispatchPhraseCategories={dispatchPhraseCategories}
           />
         </Group>
       </main>

@@ -1,67 +1,59 @@
 import { Dispatch, useState } from 'react'
-import { Trash } from 'tabler-icons-react'
-import { TextInput, Group, ActionIcon, Box, Button, ScrollArea, Select, Divider } from '@mantine/core'
-import { PhraseCategoryAction } from '../reducers/phrase-categories'
-import { PhrasesByCategory } from '../reducers/phrase-categories'
+import { Button, Select, Divider, Textarea, Stack } from '@mantine/core'
+import { PhraseCategoryAction, PhrasesByCategory } from '../reducers/phrase-categories'
+import { Database } from 'tabler-icons-react'
 
 type Props = {
   phrasesByCategory: PhrasesByCategory,
-  updateCategory: Dispatch<PhraseCategoryAction>,
+  dispatchPhraseCategories: Dispatch<PhraseCategoryAction>,
 }
 
-const PhraseEditor = ({ phrasesByCategory, updateCategory }: Props) => {
+const PhraseEditor = ({ phrasesByCategory, dispatchPhraseCategories }: Props) => {
   const categoryNames = Object.keys(phrasesByCategory)
   const [selectedCategory, setSelectedCategory] = useState(categoryNames[0])
+  const [phrases, setPhrases] = useState(phrasesByCategory[selectedCategory].join('\n'))
 
   return (
-    <Box sx={{ width: 400, padding: '0px 40px' }}>
+    <Stack sx={{ width: 400, padding: '0px 40px' }}>
       <Select
         variant="filled"
         label="Edit category"
         value={selectedCategory}
-        onChange={(value) => setSelectedCategory(value ?? categoryNames[0])}
+        onChange={(value) => {
+          const selectedCat = value ?? categoryNames[0]
+          setSelectedCategory(selectedCat)
+          setPhrases(phrasesByCategory[selectedCat].join('\n'))
+        }}
         data={categoryNames}
       />
-      <Divider sx={{ margin: '10px 0px' }} />
-      <ScrollArea sx={{ height: 500 }}>
-        {phrasesByCategory[selectedCategory].map((phrase, i) =>
-          <Group key={i} sx={{ margin: '5px 10px', gap: 2 }}>
-            <TextInput
-              placeholder="blah blah..."
-              required
-              sx={{ flex: 1 }}
-              value={phrase}
-              onChange={(event) => updateCategory({
-                type: 'EDIT_PHRASE',
-                categoryName: selectedCategory,
-                phraseIndex: i,
-                phrase: event.target.value,
-              })}
-            />
-            <ActionIcon
-              color="red"
-              variant="hover"
-              onClick={() => updateCategory({
-                type: 'DELETE_PHRASE',
-                categoryName: selectedCategory,
-                phraseIndex: i,
-              })}
-            >
-              <Trash size={16} />
-            </ActionIcon>
-          </Group>
-        )}
-      </ScrollArea>
-
-      <Group position="center" mt="md">
-        <Button onClick={() => updateCategory({
-          type: 'ADD_BLANK_PHRASE',
-          categoryName: selectedCategory,
-        })}>
-          Add phrase
-        </Button>
-      </Group>
-    </Box>
+      <Divider />
+      <Textarea
+        styles={{
+          input: { fontFamily: 'monospace', lineHeight: 2 },
+        }}
+        placeholder="Enter each phrase on a new line"
+        variant="filled"
+        autosize
+        minRows={5}
+        maxRows={20}
+        value={phrases}
+        onChange={(event) => {
+          setPhrases(event.target.value)
+          dispatchPhraseCategories({
+            type: 'EDIT_PHRASES',
+            categoryName: selectedCategory,
+            phrases: event.target.value.split('\n'),
+          })
+        }}
+      />
+      <Button
+        leftIcon={<Database size={14} />}
+        loading={false}
+        disabled={true}
+      >
+        Save changes to database
+      </Button>
+    </Stack>
   )
 }
 
