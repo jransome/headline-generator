@@ -6,6 +6,14 @@ type ResponseObject = {
   categories?: Category.ICategory[],
 }
 
+const validateUpsertBody = (newCategories: Category.ICategory[]): boolean =>
+  !Array.isArray(newCategories) ||
+  newCategories.some(category =>
+    !!category.name &&
+    Array.isArray(category.phrases) &&
+    category.phrases.every(p => typeof p === 'string')
+  )
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseObject>
@@ -23,7 +31,11 @@ export default async function handler(
       break
     case 'PUT':
       try {
-        await Category.upsertByName(JSON.parse(body))
+        const updates = JSON.parse(body)
+        if (!validateUpsertBody(updates)) {
+          return res.status(400).send({ message: 'invalid body' })
+        }
+        await Category.upsertManyByName(JSON.parse(body))
         res.status(201).send({ message: 'upserted' })
       } catch (error) {
         res.status(500).send({ message: String(error) })

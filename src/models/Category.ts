@@ -18,4 +18,11 @@ const Category: mongoose.Model<ICategory> = mongoose.models.Category || mongoose
 
 export const findAll = () => Category.find({}, { _id: 0, __v: 0 }).then(docs => docs.map(d => d.toJSON()))
 
-export const upsertByName = (newCategory: ICategory) => Category.findOneAndUpdate({ name: newCategory.name }, newCategory, { upsert: true })
+export const upsertManyByName = (newCategories: ICategory[]) => Category.bulkWrite(
+  newCategories.map(category => ({
+    updateOne: {
+      filter: { name: category.name },
+      update: category,
+      upsert: true,
+    },
+  })))
