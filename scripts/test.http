@@ -1,0 +1,17 @@
+PUT http://localhost:3000/api/categories
+
+[
+  {
+    "name": "booo",
+    "phrases": ["11"]
+  },
+  {
+    "name": "boo2o",
+    "phrases":[ "1"]
+  }
+]
+###
+
+GET http://localhost:3000/api/categories
+
+###
